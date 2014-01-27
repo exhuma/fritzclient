@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+LOCATION: http://192.168.179.1:49000/tr64desc.xml
+SERVER: FRITZBOX UPnP/1.0 AVM FRITZ!Box Fon WLAN 7270 v3 74.04.85
+CACHE-CONTROL: max-age=1800
+EXT:
+ST: urn:dslforum-org:device:InternetGatewayDevice:1
+USN: uuid:739f2409-bccb-40e7-8e6c-0024FE6E00C3::urn:dslforum-org:device:InternetGatewayDevice:1
+
+
