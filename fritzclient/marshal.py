@@ -11,8 +11,9 @@ def decode(data):
         raise ValueError('Unsupported data')
 
     for cls in XMLObject.__subclasses__():
-        if cls.NS in tag:
-            main_element = document.find(cls.NS + cls.TAGNAME)
-            return cls.decode(main_element)
+        for ns in cls.NS:
+            if ns in tag:
+                main_element = document.find(ns + cls.TAGNAME)
+                return cls.decode(main_element, ns)
 
     raise ValueError('Unsupported element: {!r}'.format(tag))

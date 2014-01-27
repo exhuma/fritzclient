@@ -18,12 +18,13 @@ class Root(object):
 
 class Service(XMLObject):
 
-    NS = "{urn:schemas-upnp-org:service-1-0}"
+    NS = [
+        "{urn:schemas-upnp-org:service-1-0}"
+    ]
     TAGNAME = 'service'
 
     @staticmethod
-    def decode(xmlserv, nsoverride=None):
-        ns = nsoverride or Service.NS
+    def decode(xmlserv, ns):
         service = Service()
         service.service_type = xmlserv.find(ns + 'serviceType').text.strip()
         service.service_id = xmlserv.find(ns + 'serviceId').text.strip()
@@ -35,12 +36,14 @@ class Service(XMLObject):
 
 class Device(XMLObject):
 
-    NS = "{urn:schemas-upnp-org:device-1-0}"
+    NS = [
+        "{urn:schemas-upnp-org:device-1-0}",
+        "{urn:dslforum-org:device-1-0}"
+    ]
     TAGNAME = 'device'
 
     @staticmethod
-    def decode(xmldev, nsoverride=None):
-        ns = nsoverride or Device.NS
+    def decode(xmldev, ns):
         device = Device()
         device.model_url = xmldev.find(ns + 'modelURL').text.strip()
         device.device_type = xmldev.find(ns + 'deviceType').text.strip()
@@ -63,14 +66,14 @@ class Device(XMLObject):
         subdevices = xmldev.find(ns + 'deviceList')
         if subdevices is not None:
             for dev in subdevices:
-                subdevice = Device.decode(dev)
+                subdevice = Device.decode(dev, ns)
                 device.devices.append(subdevice)
 
         device.services = []
         services = xmldev.find(ns + 'serviceList')
         if services is not None:
             for srv in services:
-                service = Service.decode(srv, nsoverride=ns)
+                service = Service.decode(srv, ns)
                 device.services.append(service)
 
         device.icons = []
