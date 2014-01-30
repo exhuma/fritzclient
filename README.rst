@@ -11,4 +11,4 @@ AVM Notes on the standard:
 
 .. _First Steps: http://www.avm.de/de/Extern/files/tr-064/AVM_Technical_Note_-_Konfiguration_ueber_TR-064.pdf
 .. _Technical Notes: http://www.avm.de/de/Extern/files/tr-064/AVM_TR-064_first_steps.pdf
-.. _TR-064 standard: http://www.broadband-forum.org/techincal/download/TR-064.pdf
+.. _TR-064 standard: http://www.broadband-forum.org/technical/download/TR-064.pdf
