@@ -29,3 +29,6 @@ class TestDiscovery(TestCase):
                     'urn:dslforum-org:device:InternetGatewayDevice:1'),
         }
         self.assertEqual(response, expected)
+
+
+# vim: set path+=fritzclient :

@@ -58,3 +58,6 @@ class TestMiniSoap(TestCase):
         requests.post.return_value = response_data
         result = soap.send('1.2.3.4', '/url', 'GetSecurityPort')
         self.assertEqual(result['NewSecurityPort'], 49443)
+
+
+# vim: set path+=fritzclient :

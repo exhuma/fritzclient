@@ -219,3 +219,6 @@ class TestMarshalingTr064Desc(TestCase):
     def test_devices_elementtype(self):
         result = codec.decode(self.data)
         self.assertIsInstance(result.devices[0], mdl.Device)
+
+
+# vim: set path+=fritzclient :
