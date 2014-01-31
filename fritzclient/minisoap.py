@@ -1,6 +1,7 @@
-import xml.dom.minidom as dom
+import xml.etree.ElementTree as etree
 
-import requests
+
+etree.register_namespace('s', 'http://schemas.xmlsoap.org/soap/envelope/')
 
 
 def _parse_xml_value(value):
@@ -19,51 +20,49 @@ class Container(object):
         self._element = element
 
     def __getitem__(self, key):
-        elems = self._element.getElementsByTagName(key)
+        elems = self._element.findall('.//{}'.format(key))
         if len(elems) == 1:
-            value = elems[0].firstChild.nodeValue
+            value = elems[0].text
             if value:
                 return _parse_xml_value(value)
             else:
-                return elems[0].firstChild
+                return elems[0]
         elif len(elems) > 1:
             raise KeyError('Multiple elements found for key {}'.format(key))
         else:
             raise KeyError('No such element: {}'.format(key))
 
 
-def render_message(host, url, method):
-    impl = dom.getDOMImplementation()
+def render_message(context, method, args=None):
+    """
+    @param context: The namespace for the method element (a URN from the TR-064
+                    standard).
+    @param method: The method name (from the TR-064 standard)
+    @param args: An optional dictionary of parameters.
+    """
+    if not args:
+        args = {}
+
+    etree.register_namespace('u', context)
+
     ns = 'http://schemas.xmlsoap.org/soap/envelope/'
-    doc = impl.createDocument(ns, 's:Envelope', None)
-    root = doc.documentElement
-    root.setAttribute('xmlns:s', ns)
-    root.setAttribute('s:encodingStyle',
-                      'http://schemas.xmlsoap.org/soap/encoding/')
-    envelope = doc.createElementNS(ns, 's:Envelope')
-    root.appendChild(envelope)
-    body = doc.createElementNS(ns, 's:Body')
-    method = doc.createElementNS('', 'u:' + method)
-    method.setAttribute('xmlns:u', "urn:dslforumorg:service:DeviceInfo:1")
-    body.appendChild(method)
-    envelope.appendChild(body)
-    root.appendChild(envelope)
-    return doc.toxml()
+    doc = etree.Element(etree.QName(ns, 'Envelope'))
+    doc.set(etree.QName(ns, 'encodingStyle'),
+            'http://schemas.xmlsoap.org/soap/encoding/')
+    body = etree.Element(etree.QName(ns, 'Body'))
+    method_el = etree.Element(etree.QName(context, method))
+    for key, value in args.items():
+        arg_el = etree.Element(key)
+        arg_el.text = str(value)
+        method_el.append(arg_el)
+    body.append(method_el)
+    doc.append(body)
+    output = etree.tostring(doc)
+    return output
 
 
 def parse_response(response):
-    doc = dom.parseString(response)
-    root = doc.documentElement
-    envelope = root.firstChild
-    body = envelope.firstChild
+    root = etree.fromstring(response)
+    envelope = root[0]
+    body = envelope[0]
     return Container(body)
-
-
-def send(host, url, method):
-    response = requests.post(
-        'http://{}{}'.format(host, url),
-        data=render_message(host, url, method))
-    print requests
-    print requests.post
-    print response
-    return parse_response(response)
