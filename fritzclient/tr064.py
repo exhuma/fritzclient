@@ -1,7 +1,7 @@
-from io import BytesIO
-from rfc822 import Message
 import logging
 import socket
+
+import requests
 
 LOG = logging.getLogger(__name__)
 
@@ -50,3 +50,8 @@ def discover():
             output[name] = value.strip()
 
         return output
+
+
+def get_tr064desc(location):
+    desc = requests.get(location)
+    return desc.text
