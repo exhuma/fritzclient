@@ -1,7 +1,7 @@
 Python FritzBox Client
 ======================
 
-Loosely based on the `TR-064 standard`_.
+Based on the `TR-064 standard`_.
 
 AVM Notes on the standard:
 
