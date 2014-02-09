@@ -183,7 +183,7 @@ class TestDevice(BaseTest):
                 ('scpd_url', '/x_tamSCPD.xml')
             )])
 
-        result = [
+        result = set([
             (
                 ('service_type', _._service_type),
                 ('service_id', _._service_id),
@@ -191,7 +191,7 @@ class TestDevice(BaseTest):
                 ('event_sub_url', _._event_sub_url),
                 ('scpd_url', _._scpd_url)
             )
-            for self.dev.services[_] in self.dev.services]
+            for self.dev.services[_] in self.dev.services])
 
         self.assertEqual(result, expected)
 
