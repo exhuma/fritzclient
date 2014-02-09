@@ -196,7 +196,13 @@ class TestDevice(BaseTest):
         self.assertEqual(result, expected)
 
     def test_devices(self):
-        pass
+        expected = set([
+            'urn:dslforum-org:device:LANDevice:1',
+            'urn:dslforum-org:device:WANDevice:1'
+        ])
+        result = set([self.dev.devices[_].device_type
+                      for _ in self.dev.devices])
+        self.assertEqual(result, expected)
 
 
 # vim: set path+=fritzclient :
