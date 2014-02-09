@@ -37,21 +37,19 @@ class TestInternetGatewayDeviceDiscovery(BaseTest):
         tr064desc = resource_string('fritzclient',
                                     'tests/data/tr64desc.xml')
         mock_tr064.get_tr064desc.return_value = tr064desc
-        igd = mdl.InternetGatewayDevice(
+        mdl.get_root_device(
             'http://192.168.179.1:49000/tr64desc.xml')
         self.assertFalse(mock_tr064.discover.called,
                          'SSDP discovery executed when it was not needed!')
-        self.assertEqual(igd.spec_version, '1.0')
 
     @patch('fritzclient.model.tr064')
     def test_auto_disco(self, mock_tr064):
         tr064desc = resource_string('fritzclient',
                                     'tests/data/tr64desc.xml')
         mock_tr064.get_tr064desc.return_value = tr064desc
-        igd = mdl.InternetGatewayDevice()
+        mdl.get_root_device()
         self.assertTrue(mock_tr064.discover.called,
                         'SSDP discovery was not executed!')
-        self.assertEqual(igd.spec_version, '1.0')
 
 
 class TestDevice(BaseTest):
