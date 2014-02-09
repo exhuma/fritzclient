@@ -191,7 +191,7 @@ class TestDevice(BaseTest):
                 ('event_sub_url', _._event_sub_url),
                 ('scpd_url', _._scpd_url)
             )
-            for _ in self.dev.services]
+            for self.dev.services[_] in self.dev.services]
 
         self.assertEqual(result, expected)
 
