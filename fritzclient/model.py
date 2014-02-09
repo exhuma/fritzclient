@@ -25,10 +25,6 @@ class ProxyObject(object):
         return minisoap.execute(url, self.__class__.TYPE, action, params)
 
 
-class Layer3Forwarding(ProxyObject):
-    pass
-
-
 class DeviceInfo(ProxyObject):
 
     TYPE = 'urn:dslforum-org:service:DeviceInfo:1'
@@ -57,69 +53,30 @@ class DeviceInfo(ProxyObject):
         self.firstuse_date = info_result.get('NewFirstUseDate')
 
 
-class DeviceConfig(ProxyObject):
-    pass
+def get_root_device(location=None):
 
+    if not location:
+        # No location given. Run an SSDP discovery.
+        tr064_response = tr064.discover()
+        location = tr064_response['location']
 
-class LANConfigSecurity(ProxyObject):
-    pass
+    tr064desc = tr064.get_tr064desc(location)
+    root = ET.fromstring(tr064desc)
+    if root.tag != '{ns}root'.format(ns=NS):
+        raise ValueError('The document returned at {!r} is not a valid '
+                         'TR-064 document!'.format(location))
 
+    spec = root.find('./{}specVersion'.format(NS))
+    spec_version = '.'.join([tag.text for tag in spec])
 
-class ManagementServer(ProxyObject):
-    pass
+    if spec_version != '1.0':
+        raise ValueError('This library only supports TR-064 documents of '
+                         'spec version 1.0! You passed in a document of '
+                         'version {!r}'.format(spec_version))
 
-
-class Time(ProxyObject):
-    pass
-
-
-class UserInterface(ProxyObject):
-    pass
-
-
-class LANDevice(ProxyObject):
-    pass
-
-
-class InternetGatewayDevice(object):
-
-    def __init__(self, location=None):
-        if not location:
-            tr064_response = tr064.discover()
-            location = tr064_response['location']
-
-        urlinfo = urlparse(location)
-        if ':' in urlinfo:
-            host, _ = urlinfo.netloc.split(':')
-        else:
-            host = urlinfo
-
-        tr064desc = tr064.get_tr064desc(location)
-        root = ET.fromstring(tr064desc)
-        if root.tag != '{ns}root'.format(ns=NS):
-            raise ValueError('The document returned at {!r} is not a valid '
-                             'TR-064 document!'.format(location))
-
-        spec = root.find('./{}specVersion'.format(NS))
-        self.spec_version = '.'.join([_.text for _ in spec])
-
-        if self.spec_version != '1.0':
-            raise ValueError('This library only supports TR-064 documents of '
-                             'spec version 1.0! You passed in a document of '
-                             'version {!r}'.format(self.spec_version))
-
-        control_urls = {}
-        for srv in root.findall(
-                './{0}device/{0}serviceList/{0}service'.format(NS)):
-            service_type = srv.find('./{}serviceType'.format(NS)).text.strip()
-            control_url = srv.find('./{}controlURL'.format(NS)).text.strip()
-            control_urls[service_type] = control_url
-
-        self.device_config = DeviceConfig(control_urls, root, host)
-        self.device_info = DeviceInfo(control_urls, root, host)
-        self.lan_config_security = LANConfigSecurity(control_urls, root, host)
-        self.lan_device = LANDevice(control_urls, root, host)
-        self.layer3_forwarding = Layer3Forwarding(control_urls, root, host)
-        self.management_server = ManagementServer(control_urls, root, host)
-        self.time = Time(control_urls, root, host)
-        self.user_interface = UserInterface(control_urls, root, host)
+    control_urls = {}
+    for srv in root.findall(
+            './{0}device/{0}serviceList/{0}service'.format(NS)):
+        service_type = srv.find('./{}serviceType'.format(NS)).text.strip()
+        control_url = srv.find('./{}controlURL'.format(NS)).text.strip()
+        control_urls[service_type] = control_url

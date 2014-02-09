@@ -202,5 +202,44 @@ class TestDevice(BaseTest):
                       for _ in self.dev.devices])
         self.assertEqual(result, expected)
 
+    def test_metadata(self):
+        expected = {
+            'deviceType': 'urn:dslforum-org:device:InternetGatewayDevice:1',
+            'friendlyName': 'FRITZ!Box Fon WLAN 7390',
+            'manufacturer': 'AVM',
+            'manufacturerURL': 'www.avm.de',
+            'modelDescription': 'FRITZ!Box Fon WLAN 7390',
+            'modelName': 'FRITZ!Box Fon WLAN 7390',
+            'modelNumber': '- avme',
+            'modelURL': 'www.avm.de',
+            'UDN': 'uuid:739f2409-bccb-40e7-8e6c-0896D74C6BF8',
+            'presentationURL': 'http://fritz.box',
+            'icons': [
+                {
+                    'mimetype', 'image/gif',
+                    'width', '118',
+                    'height', '119',
+                    'depth', '8',
+                    'url', '/ligd.gif',
+                }
+            ],
+        }
+
+        result = {
+            'deviceType': self.dev.device_type,
+            'friendlyName': self.dev.friendly_name,
+            'manufacturer': self.dev.manufacturer,
+            'manufacturerURL': self.dev.manufacturer_url,
+            'modelDescription': self.dev.model_description,
+            'modelName': self.dev.model_name,
+            'modelNumber': self.dev.model_number,
+            'modelURL': self.dev.model_url,
+            'UDN': self.dev.udn,
+            'presentationURL': self.dev.presentation_url,
+            'icons': self.dev.icons,
+        }
+
+        self.assertEqual(result, expected)
+
 
 # vim: set path+=fritzclient :
