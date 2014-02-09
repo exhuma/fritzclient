@@ -7,7 +7,7 @@ from mock import patch
 import fritzclient.model as mdl
 
 
-class BaseTest(TestCase):
+class TR064Test(TestCase):
 
     def setUp(self):
         tr064desc = resource_string('fritzclient',
@@ -30,7 +30,7 @@ class BaseTest(TestCase):
             self.dev = mdl.get_root_device()
 
 
-class TestInternetGatewayDeviceDiscovery(BaseTest):
+class TestInternetGatewayDeviceDiscovery(TR064Test):
 
     @patch('fritzclient.model.tr064')
     def test_explicit_ip(self, mock_tr064):
@@ -52,7 +52,7 @@ class TestInternetGatewayDeviceDiscovery(BaseTest):
                         'SSDP discovery was not executed!')
 
 
-class TestDevice(BaseTest):
+class TestDevice(TR064Test):
 
     def test_services(self):
 
