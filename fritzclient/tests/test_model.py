@@ -1,15 +1,10 @@
 from contextlib import nested
-from os import urandom
 from pkg_resources import resource_string
 from unittest import TestCase
 
 from mock import patch
 
 import fritzclient.model as mdl
-
-
-UNDEF = urandom(10)
-"Random value to detect unfinished unit-tests."
 
 
 class BaseTest(TestCase):
