@@ -27,7 +27,7 @@ class BaseTest(TestCase):
                 'usn': ('uuid:739f2409-bccb-40e7-8e6c-0024FE6E00C3::'
                         'urn:dslforum-org:device:InternetGatewayDevice:1'),
             }
-            self.dev = mdl.InternetGatewayDevice()
+            self.dev = mdl.get_root_device()
 
 
 class TestInternetGatewayDeviceDiscovery(BaseTest):
