@@ -242,4 +242,104 @@ class TestDevice(TR064Test):
         self.assertEqual(result, expected)
 
 
+class TestService(TestCase):
+
+    def setUp(self):
+        service_xml = resource_string('fritzclient',
+                                      'tests/data/scpd/wlanconfigSCPD.xml')
+        self.service = mdl.Service(
+            'urn:WLANConfiguration-com:serviceId:WLANConfiguration1',
+            control_url='/upnp/control/wlanconfig1',
+            event_sub_url='/upnp/control/wlanconfig1',
+            scpd_doc=service_xml)
+
+    def test_variables(self):
+        expected = set([
+            'Enable',
+            'Status',
+            'MaxBitRate',
+            'Channel',
+            'PossibleChannels',
+            'SSID',
+            'BeaconType',
+            'MACAddressControlEnabled',
+            'Standard',
+            'BSSID',
+            'BasicEncryptionModes',
+            'BasicAuthenticationMode',
+            'WEPKey0',
+            'WEPKey1',
+            'WEPKey2',
+            'WEPKey3',
+            'WEPKeyIndex',
+            'KeyPassphrase',
+            'PreSharedKey',
+            'MaxCharsSSID',
+            'MinCharsSSID',
+            'AllowedCharsSSID',
+            'MinCharsPSK',
+            'MaxCharsPSK',
+            'AllowedCharsPSK',
+            'MinCharsKeyPassphrase',
+            'MaxCharsKeyPassphrase',
+            'AllowedCharsKeyPassphrase',
+            'BeaconAdvertisementEnabled',
+            'TotalAssociations',
+            'AssociatedDeviceMACAddress',
+            'AssociatedDeviceIPAddress',
+            'AssociatedDeviceAuthState',
+            'EnableHighFrequency',
+            'StickSurfEnable',
+            'TotalPacketsSent',
+            'TotalPacketsReceived',
+            'X_AVM-DE_IPTVoptimize',
+            'X_AVM-DE_SignalStrength',
+            'X_AVM-DE_Speed',
+            'NightControl',
+            'NightTimeControlNoForcedOff',
+        ])
+
+        result = set([_.name for _ in self.service.variables])
+
+        self.assertEqual(result, expected)
+
+    def test_actions(self):
+
+        expected = set([
+            'SetEnable',
+            'GetInfo',
+            'SetConfig',
+            'SetSecurityKeys',
+            'GetSecurityKeys',
+            'SetDefaultWEPKeyIndex',
+            'GetDefaultWEPKeyIndex',
+            'SetBasBeaconSecurityProperties',
+            'GetBasBeaconSecurityProperties',
+            'GetStatistics',
+            'GetPacketStatistics',
+            'GetBSSID',
+            'GetSSID',
+            'SetSSID',
+            'GetBeaconType',
+            'SetBeaconType',
+            'GetChannelInfo',
+            'SetChannel',
+            'GetBeaconAdvertisement',
+            'SetBeaconAdvertisement',
+            'GetTotalAssociations',
+            'GetGenericAssociatedDeviceInfo',
+            'GetSpecificAssociatedDeviceInfo',
+            'X_SetHighFrequencyBand',
+            'X_AVM_DE_SetStickSurfEnable',
+            'X_AVM_DE_GetIPTVOptimized',
+            'X_AVM_DE_SetIPTVOptimized',
+            'X_AVM_DE_GetNightControl',
+        ])
+
+        result = set([_.__name__ for _ in dir(self.service)
+                      if hasattr(getattr(self.service, _), '__call__')])
+
+        self.assertEqual(result, expected)
+
+
 # vim: set path+=fritzclient :
